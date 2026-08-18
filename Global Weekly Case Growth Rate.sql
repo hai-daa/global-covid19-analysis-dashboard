@@ -1,27 +1,19 @@
---- GLOBAL WEEKLY CASE GROWTH RATE (NO FILTER)
-
-
 WITH WeeklyGlobalCases AS (
   SELECT
-  
-    DATE_TRUNC('WEEK', date) AS week_start_date,
-  
+    DATE_TRUNC('week', date) AS week_start_date,
     SUM(new_cases) AS weekly_new_cases
   FROM
     owid_covid_data
   WHERE
-
     continent IS NOT NULL
   GROUP BY
-    week_start_date
+    DATE_TRUNC('week', date)
 ),
-
 
 WeeklyGlobalComparison AS (
   SELECT
     week_start_date,
     weekly_new_cases,
-    
     LAG(weekly_new_cases, 1, 0) OVER (ORDER BY week_start_date) AS previous_week_cases
   FROM
     WeeklyGlobalCases
